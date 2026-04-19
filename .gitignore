@@ -6,6 +6,3 @@ dist/
 coverage/
 .DS_Store
 
-# Git helper scripts (contain credentials, not part of project)
-git-history.ps1
-push-daily.ps1
