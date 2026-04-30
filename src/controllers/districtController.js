@@ -38,6 +38,17 @@ export const getDistricts = async (req, res, next) => {
  *     tags: [Districts]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: District ObjectId
+ *     responses:
+ *       200:
+ *         description: District details
+ *       404:
+ *         description: District not found
  */
 export const getDistrictById = async (req, res, next) => {
   try {
@@ -59,6 +70,21 @@ export const getDistrictById = async (req, res, next) => {
  *     tags: [Districts]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, province]
+ *             properties:
+ *               name: { type: string, example: Colombo }
+ *               province: { type: string, example: 6630a1b2c3d4e5f678901234 }
+ *     responses:
+ *       201:
+ *         description: District created
+ *       409:
+ *         description: District already exists in this province
  */
 export const createDistrictValidation = [
   body('name').trim().notEmpty().withMessage('District name is required'),
@@ -70,6 +96,7 @@ export const createDistrict = async (req, res, next) => {
     const { name, province } = req.body;
     const district = await District.create({ name, province });
     await district.populate('province', 'name code');
+    res.setHeader('Location', `/api/districts/${district._id}`);
     res.status(201).json({ status: 'success', data: { district } });
   } catch (err) {
     next(err);
@@ -84,6 +111,26 @@ export const createDistrict = async (req, res, next) => {
  *     tags: [Districts]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: District ObjectId
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string, example: Colombo }
+ *               province: { type: string, example: 6630a1b2c3d4e5f678901234 }
+ *     responses:
+ *       200:
+ *         description: District updated
+ *       404:
+ *         description: District not found
  */
 export const updateDistrictValidation = [
   param('id').isMongoId().withMessage('Invalid district ID'),
@@ -112,6 +159,17 @@ export const updateDistrict = async (req, res, next) => {
  *     tags: [Districts]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: District ObjectId
+ *     responses:
+ *       204:
+ *         description: District deleted
+ *       404:
+ *         description: District not found
  */
 export const deleteDistrict = async (req, res, next) => {
   try {

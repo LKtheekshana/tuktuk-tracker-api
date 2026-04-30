@@ -134,6 +134,7 @@ export const createVehicle = async (req, res, next) => {
   try {
     const { registrationNumber, driverName, driverNIC, district, province, status } = req.body;
     const vehicle = await Vehicle.create({ registrationNumber, driverName, driverNIC, district, province, status });
+    res.setHeader('Location', `/api/vehicles/${vehicle._id}`);
     res.status(201).json({ status: 'success', data: { vehicle } });
   } catch (err) {
     next(err);

@@ -46,6 +46,17 @@ export const getStations = async (req, res, next) => {
  *     tags: [Stations]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Station ObjectId
+ *     responses:
+ *       200:
+ *         description: Station details
+ *       404:
+ *         description: Station not found
  */
 export const getStationById = async (req, res, next) => {
   try {
@@ -69,6 +80,17 @@ export const getStationById = async (req, res, next) => {
  *     tags: [Stations]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Station ObjectId
+ *     responses:
+ *       200:
+ *         description: List of vehicles in the station's district
+ *       404:
+ *         description: Station not found
  */
 export const getStationVehicles = async (req, res, next) => {
   try {
@@ -92,6 +114,25 @@ export const getStationVehicles = async (req, res, next) => {
  *     tags: [Stations]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, code, district, province]
+ *             properties:
+ *               name: { type: string, example: Colombo Fort Police Station }
+ *               code: { type: string, example: CMB-FORT }
+ *               district: { type: string, example: 6630a1b2c3d4e5f678901234 }
+ *               province: { type: string, example: 6630a1b2c3d4e5f678901234 }
+ *               address: { type: string, example: 'No.1, Chaittya Road, Colombo 01' }
+ *               contactNumber: { type: string, example: '0112323456' }
+ *     responses:
+ *       201:
+ *         description: Station created
+ *       409:
+ *         description: Station code already exists
  */
 export const createStationValidation = [
   body('name').trim().notEmpty().withMessage('Station name is required'),
@@ -104,6 +145,7 @@ export const createStation = async (req, res, next) => {
   try {
     const { name, code, district, province, address, contactNumber } = req.body;
     const station = await PoliceStation.create({ name, code, district, province, address, contactNumber });
+    res.setHeader('Location', `/api/stations/${station._id}`);
     res.status(201).json({ status: 'success', data: { station } });
   } catch (err) {
     next(err);
@@ -118,6 +160,28 @@ export const createStation = async (req, res, next) => {
  *     tags: [Stations]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Station ObjectId
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string, example: Colombo Fort Police Station }
+ *               code: { type: string, example: CMB-FORT }
+ *               address: { type: string, example: 'No.1, Chaittya Road, Colombo 01' }
+ *               contactNumber: { type: string, example: '0112323456' }
+ *     responses:
+ *       200:
+ *         description: Station updated
+ *       404:
+ *         description: Station not found
  */
 export const updateStationValidation = [
   param('id').isMongoId().withMessage('Invalid station ID'),
@@ -146,6 +210,17 @@ export const updateStation = async (req, res, next) => {
  *     tags: [Stations]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Station ObjectId
+ *     responses:
+ *       204:
+ *         description: Station deleted
+ *       404:
+ *         description: Station not found
  */
 export const deleteStation = async (req, res, next) => {
   try {

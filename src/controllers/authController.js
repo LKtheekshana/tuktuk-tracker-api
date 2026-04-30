@@ -45,6 +45,7 @@ export const register = async (req, res, next) => {
 
     const user = await User.create({ username, email, password, role, station, vehicle });
 
+    res.setHeader('Location', `/api/users/${user._id}`);
     res.status(201).json({
       status: 'success',
       data: { user },

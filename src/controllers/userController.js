@@ -30,6 +30,17 @@ export const getUsers = async (_req, res, next) => {
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: User ObjectId
+ *     responses:
+ *       200:
+ *         description: User details
+ *       404:
+ *         description: User not found
  */
 export const getUserById = async (req, res, next) => {
   try {
@@ -51,6 +62,30 @@ export const getUserById = async (req, res, next) => {
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: User ObjectId
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username: { type: string, example: officer_colombo }
+ *               email: { type: string, example: officer@police.lk }
+ *               role: { type: string, enum: [ADMIN, STATION_OFFICER, DEVICE] }
+ *               isActive: { type: boolean, example: true }
+ *               station: { type: string, description: PoliceStation ObjectId (for STATION_OFFICER) }
+ *               vehicle: { type: string, description: Vehicle ObjectId (for DEVICE) }
+ *     responses:
+ *       200:
+ *         description: User updated
+ *       404:
+ *         description: User not found
  */
 export const updateUserValidation = [
   param('id').isMongoId().withMessage('Invalid user ID'),
@@ -83,6 +118,17 @@ export const updateUser = async (req, res, next) => {
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: User ObjectId
+ *     responses:
+ *       204:
+ *         description: User deleted
+ *       404:
+ *         description: User not found
  */
 export const deleteUser = async (req, res, next) => {
   try {

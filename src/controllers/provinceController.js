@@ -82,6 +82,7 @@ export const createProvince = async (req, res, next) => {
   try {
     const { name, code } = req.body;
     const province = await Province.create({ name, code });
+    res.setHeader('Location', `/api/provinces/${province._id}`);
     res.status(201).json({ status: 'success', data: { province } });
   } catch (err) {
     next(err);
@@ -96,6 +97,26 @@ export const createProvince = async (req, res, next) => {
  *     tags: [Provinces]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Province ObjectId
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string, example: Western Province }
+ *               code: { type: string, example: WP }
+ *     responses:
+ *       200:
+ *         description: Province updated
+ *       404:
+ *         description: Province not found
  */
 export const updateProvinceValidation = [
   param('id').isMongoId().withMessage('Invalid province ID'),
@@ -124,6 +145,17 @@ export const updateProvince = async (req, res, next) => {
  *     tags: [Provinces]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *         description: Province ObjectId
+ *     responses:
+ *       204:
+ *         description: Province deleted
+ *       404:
+ *         description: Province not found
  */
 export const deleteProvince = async (req, res, next) => {
   try {

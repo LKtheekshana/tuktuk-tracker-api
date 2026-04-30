@@ -10,9 +10,9 @@ A RESTful API for real-time three-wheeler (tuk-tuk) tracking and movement loggin
 
 ## Live API
 
-- **Base URL:** `https://your-deployed-app.onrender.com`
-- **Swagger Docs:** `https://your-deployed-app.onrender.com/api-docs`
-- **Health Check:** `https://your-deployed-app.onrender.com/health`
+- **Base URL:** `https://tuktuk-tracker-api-production.up.railway.app`
+- **Swagger Docs:** `https://tuktuk-tracker-api-production.up.railway.app/api-docs`
+- **Health Check:** `https://tuktuk-tracker-api-production.up.railway.app/health`
 
 ---
 
@@ -27,7 +27,7 @@ A RESTful API for real-time three-wheeler (tuk-tuk) tracking and movement loggin
 | Validation | express-validator |
 | Docs | Swagger (swagger-jsdoc + swagger-ui-express) |
 | Security | helmet, cors |
-| Deployment | Render.com |
+| Deployment | Railway |
 
 ---
 
@@ -119,38 +119,3 @@ Open `http://localhost:5000/api-docs` for interactive Swagger docs.
 | `STATION_OFFICER` | Read-only access to vehicles and locations |
 | `DEVICE` | Can only POST pings for their assigned vehicle |
 
----
-
-## Deployment (Render + MongoDB Atlas)
-
-1. Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas)
-2. Whitelist `0.0.0.0/0` under Network Access
-3. Create a database user and copy the connection string to `MONGO_URI`
-4. Push code to GitHub
-5. Go to [render.com](https://render.com) → New Web Service → connect repo
-6. Set environment variables: `MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`
-7. Build command: (leave empty)  Start command: `node server.js`
-8. Run seed from local machine pointing at Atlas URI after deployment
-
----
-
-## Simulating Pings (Postman / curl)
-
-```bash
-# 1. Login
-curl -X POST https://your-app.onrender.com/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"Admin@1234"}'
-
-# 2. Post a ping (use token from step 1)
-curl -X POST https://your-app.onrender.com/api/vehicles/VEHICLE_ID/ping \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"latitude":6.9271,"longitude":79.8612,"speed":34.5,"heading":180}'
-```
-
----
-
-## License
-
-ISC — for academic use only.
